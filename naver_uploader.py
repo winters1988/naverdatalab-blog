@@ -236,13 +236,19 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
         time.sleep(0.15)
 
     pyperclip.copy(title)
-    if find_and_click(IMG_TITLE_AREA, desc="제목 영역"):
-        pyautogui.hotkey("ctrl", "a")
-        time.sleep(0.3)
-        pyautogui.hotkey("ctrl", "v")
-        log(f"제목 입력 완료: {title}")
-    else:
-        log("[경고] 제목 영역 못 찾음. 수동 입력 필요.")
+    title_clicked = find_and_click(IMG_TITLE_AREA, desc="제목 영역")
+    if not title_clicked:
+        # 대안: 제목 영역은 에디터 상단 약 20% 위치
+        sw, sh = pyautogui.size()
+        pyautogui.click(sw // 2, int(sh * 0.20))
+        time.sleep(0.5)
+        log("[대안] 제목 영역 좌표 클릭")
+        title_clicked = True
+
+    pyautogui.hotkey("ctrl", "a")
+    time.sleep(0.3)
+    pyautogui.hotkey("ctrl", "v")
+    log(f"제목 입력 완료: {title}")
 
     time.sleep(1)
 
