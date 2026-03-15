@@ -1,0 +1,39 @@
+{
+    "BLOG_ID": "jsk1988",
+    "schedule_times": [
+        "09:00",
+        "18:00"
+    ],
+    "schedule_enabled": false,
+    "link_index": 2,
+    "hyperlinks": [
+        {
+            "keyword": "흥신소",
+            "url": "https://www.kspdtheone.com/"
+        },
+        {
+            "keyword": "탐정사무소",
+            "url": "https://kspdplus.co.kr/"
+        },
+        {
+            "keyword": "대구탐정사무소",
+            "url": "https://kspdplus.co.kr/daegu"
+        },
+        {
+            "keyword": "흥신소",
+            "url": "https://kspdplus.co.kr/"
+        },
+        {
+            "keyword": "탐정사무소",
+            "url": "https://koreainvestigators.com/"
+        },
+        {
+            "keyword": "수원흥신소",
+            "url": "https://suwondetective.co.kr/"
+        },
+        {
+            "keyword": "인천탐정사무소",
+            "url": "https://incheondetective.xyz/"
+        }
+    ]
+}

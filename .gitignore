@@ -1,0 +1,20 @@
+# 환경변수 / API 키
+.env
+
+# 업로드 임시 파일
+upload_queue/
+blog_images/
+
+# 생성된 블로그 파일
+blog_*.txt
+blog_*.html
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# 개인 설정 (원하면 포함 가능)
+# config.json

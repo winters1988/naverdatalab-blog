@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -X utf8 -c \":*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8501)",
+      "Bash(curl -s -o /dev/null -w \" %{http_code}\" http://localhost:8502)",
+      "Bash(curl -s -o /dev/null -w \" %{http_code}\" http://localhost:8503)",
+      "WebSearch",
+      "Bash(python -c \"import app; print\\(''OK''\\)\")",
+      "Bash(pip install:*)",
+      "Bash(python -m playwright install chromium)",
+      "Bash(python -m playwright install chrome)",
+      "Read(//c/Work/naverdatalab_blog/$LOCALAPPDATA/Google/Chrome/**)",
+      "Read(//c/Users/winte/AppData/Local/Google/Chrome/User Data/**)",
+      "Bash(python -c \"import naver_uploader; print\\(''OK''\\)\")",
+      "Bash(python -c \"import win32crypt; print\\(''OK''\\)\")",
+      "Bash(python -c \"from Cryptodome.Cipher import AES; print\\(''''OK''''\\)\")",
+      "Bash(python -c \"import pyautogui, pyperclip; print\\(''OK''\\)\")",
+      "Bash(ls c:/Work/naverdatalab_blog/*.png)",
+      "Bash(python -c \"import naver_uploader; print\\(naver_uploader.clean_title\\(''**조병현 WBC, 고영표 투구 재조명! 미치 화이트가 보여준 희망**''\\)\\)\")",
+      "Bash(python -X utf8 -c \"import naver_uploader; print\\(naver_uploader.clean_title\\(''**조병현 WBC, 고영표 투구 재조명! 미치 화이트가 보여준 희망**''\\)\\)\")",
+      "Bash(python -X utf8 -c \"import naver_uploader; print\\(naver_uploader.clean_title\\(''**조병현 WBC, 고영표 투구 재조명\\\\! 미치 화이트가 보여준 희망**''\\)\\)\")",
+      "Bash(python -c \"from PIL import Image; print\\(''''OK''''\\)\")",
+      "Bash(python -c \"import app; import naver_uploader; print\\(''OK''\\)\")"
+    ]
+  }
+}
