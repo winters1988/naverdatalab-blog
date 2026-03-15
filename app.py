@@ -771,11 +771,12 @@ def _trigger_backlink(log_fn=None):
 
         # backlink.py 백그라운드 실행
         import subprocess as _sp
-        _sp.Popen(
+        proc = _sp.Popen(
             [sys.executable, backlink_py],
             cwd=BASE_DIR,
             creationflags=0x00000008,  # DETACHED_PROCESS (Windows)
         )
+        sch_state.backlink_proc = proc
         log("[백링크] backlink.py 백그라운드 실행 시작!")
 
     except Exception as e:
@@ -1353,6 +1354,71 @@ def main():
                     sch_state.running = False
                     st.rerun()
 
+        # ── 방문자 프로그램 (backlink.py)
+        st.markdown("---")
+        st.subheader("방문자 프로그램")
+
+        # published_urls.json 현황 표시
+        url_log_path = os.path.join(BASE_DIR, "published_urls.json")
+        published_urls_count = 0
+        if os.path.exists(url_log_path):
+            try:
+                with open(url_log_path, encoding="utf-8") as _f:
+                    _pub = json.load(_f)
+                published_urls_count = len([p for p in _pub if p.get("url")])
+                st.caption(f"발행된 블로그 URL: **{published_urls_count}개** (published_urls.json)")
+                if published_urls_count > 0:
+                    with st.expander("URL 목록 확인"):
+                        for _p in _pub[-10:]:
+                            st.text(f"{_p.get('published_at','')[:16]}  {_p.get('title','')[:30]}")
+                            st.caption(_p.get('url', ''))
+            except Exception:
+                st.caption("published_urls.json 읽기 실패")
+        else:
+            st.caption("published_urls.json 없음 — 블로그 발행 후 URL이 자동 저장됩니다.")
+
+        # 방문자 프로그램 실행 상태 확인
+        _bl_proc = sch_state.backlink_proc
+        bl_running = _bl_proc is not None and _bl_proc.poll() is None
+
+        if bl_running:
+            st.success("방문자 프로그램 실행 중 (backlink.py)")
+        else:
+            st.info("방문자 프로그램 중지됨")
+
+        bl_col1, bl_col2 = st.columns(2)
+        with bl_col1:
+            if not bl_running:
+                if st.button(
+                    f"방문 프로그램 시작 ({published_urls_count}개 URL)",
+                    type="primary", key="btn_bl_start",
+                    disabled=(published_urls_count == 0),
+                ):
+                    def _bl_log(msg):
+                        ts = datetime.now().strftime("%H:%M:%S")
+                        line = f"[{ts}] {msg}"
+                        print(line)
+                        with sch_state.lock:
+                            sch_state.logs.append(line)
+                    _trigger_backlink(_bl_log)
+                    st.rerun()
+            else:
+                st.success("실행 중")
+
+        with bl_col2:
+            if bl_running:
+                if st.button("방문 프로그램 중지", type="secondary", key="btn_bl_stop"):
+                    try:
+                        sch_state.backlink_proc.terminate()
+                    except Exception:
+                        pass
+                    sch_state.backlink_proc = None
+                    with sch_state.lock:
+                        sch_state.logs.append(
+                            f"[{datetime.now().strftime('%H:%M:%S')}] [백링크] 방문자 프로그램 중지됨."
+                        )
+                    st.rerun()
+
         # ── 실시간 로그
         st.markdown("---")
         lcol1, lcol2 = st.columns([4, 1])
@@ -1375,7 +1441,7 @@ def main():
             st.caption("시작 버튼을 누르면 로그가 실시간으로 표시됩니다.")
 
         # 실행 중일 때 2초마다 자동 새로고침 (UI 블로킹 없음)
-        if running:
+        if running or bl_running:
             st_autorefresh(interval=2000, key="sch_autorefresh")
 
 
