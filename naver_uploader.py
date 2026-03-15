@@ -207,25 +207,6 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
     copy_html_to_clipboard(INTRO_HTML)
     pyautogui.hotkey("ctrl", "v")
     time.sleep(1.5)
-
-    # 붙여넣기가 실제로 됐는지 확인: 클립보드 내용과 화면 비교 대신 커서 이동으로 검증
-    # Ctrl+A로 전체 선택 후 내용 있으면 성공, 없으면 재시도
-    pyautogui.hotkey("ctrl", "a")
-    time.sleep(0.3)
-    selected = pyperclip.paste().strip()
-    if not selected:
-        log("[경고] 붙여넣기 실패 감지 → 본문 재클릭 후 재시도")
-        sw, sh = pyautogui.size()
-        pyautogui.click(sw // 2, int(sh * 0.58))
-        time.sleep(0.8)
-        copy_html_to_clipboard(INTRO_HTML)
-        pyautogui.hotkey("ctrl", "v")
-        time.sleep(1.5)
-    else:
-        # 선택 해제 후 커서를 끝으로 이동
-        pyautogui.hotkey("ctrl", "End")
-        time.sleep(0.3)
-
     pyautogui.press("enter")
     time.sleep(0.5)
 
