@@ -167,7 +167,7 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
     else:
         time.sleep(3)
 
-    # 3. 본문 영역 클릭 (최대 3회 재시도)
+    # 3. 본문 영역 클릭 (이미지 인식 3회 → 좌표 클릭 → 탭 키 순서로 시도)
     content_focused = False
     for _try in range(3):
         if find_and_click(IMG_CONTENT, timeout=10, desc=f"본문 영역 (시도 {_try + 1})"):
@@ -175,10 +175,23 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
             break
         log(f"  본문 클릭 실패. 3초 후 재시도...")
         time.sleep(3)
+
     if not content_focused:
-        log("[대안] 탭 키로 본문 포커스 이동")
-        pyautogui.press("tab")
-        time.sleep(0.5)
+        # 대안1: 화면 중앙 아래쪽 클릭 (네이버 에디터 본문 위치)
+        sw, sh = pyautogui.size()
+        cx, cy = sw // 2, int(sh * 0.58)
+        log(f"[대안1] 화면 좌표 클릭 ({cx}, {cy})")
+        pyautogui.click(cx, cy)
+        time.sleep(0.8)
+
+        # 대안2: 그래도 안 되면 Tab 키 2회
+        if not find_and_click(IMG_CONTENT, timeout=3, desc="좌표 클릭 후 본문 확인"):
+            log("[대안2] 탭 키 2회로 본문 포커스 이동")
+            pyautogui.press("tab")
+            time.sleep(0.4)
+            pyautogui.press("tab")
+            time.sleep(0.4)
+
     time.sleep(1.0)
 
     # 4. 하이퍼링크 첫 줄 (upload_data.json의 hyperlink 값 사용)
@@ -194,11 +207,26 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
     copy_html_to_clipboard(INTRO_HTML)
     pyautogui.hotkey("ctrl", "v")
     time.sleep(1.5)
-    pyautogui.press("enter")
-    time.sleep(0.5)
 
-    # 붙여넣기 후 포커스 확인: 빈 에디터 방지를 위해 한 번 더 클릭
-    find_and_click(IMG_CONTENT, timeout=5, desc="본문 포커스 재확인")
+    # 붙여넣기가 실제로 됐는지 확인: 클립보드 내용과 화면 비교 대신 커서 이동으로 검증
+    # Ctrl+A로 전체 선택 후 내용 있으면 성공, 없으면 재시도
+    pyautogui.hotkey("ctrl", "a")
+    time.sleep(0.3)
+    selected = pyperclip.paste().strip()
+    if not selected:
+        log("[경고] 붙여넣기 실패 감지 → 본문 재클릭 후 재시도")
+        sw, sh = pyautogui.size()
+        pyautogui.click(sw // 2, int(sh * 0.58))
+        time.sleep(0.8)
+        copy_html_to_clipboard(INTRO_HTML)
+        pyautogui.hotkey("ctrl", "v")
+        time.sleep(1.5)
+    else:
+        # 선택 해제 후 커서를 끝으로 이동
+        pyautogui.hotkey("ctrl", "End")
+        time.sleep(0.3)
+
+    pyautogui.press("enter")
     time.sleep(0.5)
 
     # 5. 이미지 마커 기준으로 HTML 분할 → 텍스트-이미지 교차 삽입

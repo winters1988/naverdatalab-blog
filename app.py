@@ -736,6 +736,17 @@ def _trigger_backlink(log_fn=None):
         if log_fn:
             log_fn(full)
 
+    # 기존 backlink.py 프로세스가 살아있으면 먼저 종료
+    _prev = sch_state.backlink_proc
+    if _prev is not None and _prev.poll() is None:
+        try:
+            _prev.terminate()
+            _prev.wait(timeout=5)
+            log("[백링크] 기존 방문자 프로그램 종료 완료.")
+        except Exception as _e:
+            log(f"[백링크] 기존 프로세스 종료 실패: {_e}")
+        sch_state.backlink_proc = None
+
     url_log = os.path.join(BASE_DIR, "published_urls.json")
     backlink_cfg = os.path.join(BASE_DIR, "configbacklink.json")
     backlink_py  = os.path.join(BASE_DIR, "backlink.py")
@@ -769,23 +780,17 @@ def _trigger_backlink(log_fn=None):
             json.dump(cfg, f, ensure_ascii=False, indent=2)
         log(f"[백링크] configbacklink.json start_urls {len(merged)}개 업데이트")
 
-        # backlink.py 실행 — stdout/stderr를 backlink_log.txt로 리다이렉트
+        # backlink.py 새 콘솔 창으로 실행 (직접 닫거나 UI 중지 버튼으로 종료 가능)
         import subprocess as _sp
-        bl_log_path = os.path.join(BASE_DIR, "backlink_log.txt")
-        # 기존 로그 초기화
-        with open(bl_log_path, "w", encoding="utf-8") as _lf:
-            _lf.write(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] backlink.py 시작\n")
-        bl_log_file = open(bl_log_path, "a", encoding="utf-8", buffering=1)
         proc = _sp.Popen(
             [sys.executable, backlink_py],
             cwd=BASE_DIR,
-            stdout=bl_log_file,
-            stderr=bl_log_file,
-            creationflags=0x00000200,  # CREATE_NEW_PROCESS_GROUP (Windows)
+            env={**os.environ, "PYTHONIOENCODING": "utf-8"},
+            creationflags=0x00000010,  # CREATE_NEW_CONSOLE (Windows) — 새 창으로 열림
         )
         sch_state.backlink_proc = proc
-        sch_state.backlink_log_file = bl_log_file
-        log(f"[백링크] backlink.py 실행 시작! PID={proc.pid} | 로그: backlink_log.txt")
+        sch_state.backlink_log_file = None
+        log(f"[백링크] backlink.py 새 창으로 실행 시작! PID={proc.pid}")
 
     except Exception as e:
         log(f"[백링크] 오류: {e}")
@@ -1432,18 +1437,6 @@ def main():
                             f"[{datetime.now().strftime('%H:%M:%S')}] [백링크] 방문자 프로그램 중지됨."
                         )
                     st.rerun()
-
-        # 백링크 실행 로그 (backlink_log.txt 실시간 표시)
-        bl_log_path = os.path.join(BASE_DIR, "backlink_log.txt")
-        if os.path.exists(bl_log_path):
-            try:
-                with open(bl_log_path, encoding="utf-8", errors="replace") as _lf:
-                    bl_lines = _lf.readlines()
-                if bl_lines:
-                    st.markdown("**방문자 프로그램 로그** (최근 30줄)")
-                    st.code("".join(bl_lines[-30:]), language=None)
-            except Exception:
-                pass
 
         # ── 실시간 로그
         st.markdown("---")
