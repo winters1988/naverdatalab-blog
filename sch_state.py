@@ -9,4 +9,5 @@ logs: list[str] = []
 lock = threading.Lock()
 
 # 방문자 프로그램 (backlink.py) 프로세스 핸들
-backlink_proc = None  # subprocess.Popen
+backlink_proc = None      # subprocess.Popen
+backlink_log_file = None  # 로그 파일 핸들 (종료 시 닫기용)
