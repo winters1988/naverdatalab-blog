@@ -7,6 +7,8 @@
 """
 
 import streamlit as st
+from streamlit_autorefresh import st_autorefresh
+import sch_state
 import json
 import os
 import re
@@ -22,6 +24,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 load_dotenv()
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID")
 NAVER_CLIENT_SECRET = os.getenv("NAVER_CLIENT_SECRET")
@@ -714,10 +718,68 @@ def run_all_hyperlinks_pipeline(style_name="친근한 이웃 블로거", word_co
                 _time.sleep(gap_seconds)
 
         log(f"\n전체 {len(plan)}건 발행 완료!")
+
+        # 발행된 URL 수집 후 backlink.py 실행
+        _trigger_backlink(log)
         return True
     except Exception as e:
         log(f"오류: {e}")
         return False
+
+
+def _trigger_backlink(log_fn=None):
+    """published_urls.json → configbacklink.json start_urls 업데이트 → backlink.py 실행"""
+    def log(msg):
+        ts = datetime.now().strftime("%H:%M:%S")
+        full = f"[{ts}] {msg}"
+        print(full)
+        if log_fn:
+            log_fn(full)
+
+    url_log = os.path.join(BASE_DIR, "published_urls.json")
+    backlink_cfg = os.path.join(BASE_DIR, "configbacklink.json")
+    backlink_py  = os.path.join(BASE_DIR, "backlink.py")
+
+    if not os.path.exists(url_log):
+        log("[백링크] published_urls.json 없음. 건너뜀.")
+        return
+    if not os.path.exists(backlink_py):
+        log("[백링크] backlink.py 없음. 건너뜀.")
+        return
+
+    try:
+        with open(url_log, encoding="utf-8") as f:
+            published = json.load(f)
+        new_urls = [p["url"] for p in published if p.get("url")]
+        if not new_urls:
+            log("[백링크] 발행된 URL 없음.")
+            return
+
+        # configbacklink.json start_urls 업데이트
+        cfg = {}
+        if os.path.exists(backlink_cfg):
+            with open(backlink_cfg, encoding="utf-8") as f:
+                cfg = json.load(f)
+
+        # 기존 URL + 새 URL 합산 (중복 제거, 최신 50개 유지)
+        existing = cfg.get("start_urls", [])
+        merged = list(dict.fromkeys(new_urls + existing))[:50]
+        cfg["start_urls"] = merged
+        with open(backlink_cfg, "w", encoding="utf-8") as f:
+            json.dump(cfg, f, ensure_ascii=False, indent=2)
+        log(f"[백링크] configbacklink.json start_urls {len(merged)}개 업데이트")
+
+        # backlink.py 백그라운드 실행
+        import subprocess as _sp
+        _sp.Popen(
+            [sys.executable, backlink_py],
+            cwd=BASE_DIR,
+            creationflags=0x00000008,  # DETACHED_PROCESS (Windows)
+        )
+        log("[백링크] backlink.py 백그라운드 실행 시작!")
+
+    except Exception as e:
+        log(f"[백링크] 오류: {e}")
 
 
 # ─────────────────────────────────────────────
@@ -726,6 +788,9 @@ def run_all_hyperlinks_pipeline(style_name="친근한 이웃 블로거", word_co
 
 _scheduler = None
 _scheduler_lock = threading.Lock()
+
+# ── 스케줄러 전역 상태 (스레드 ↔ UI 공유)
+# 스케줄러 상태는 sch_state 모듈에서 관리 (Streamlit 재실행 시 초기화 방지)
 
 def get_scheduler():
     global _scheduler
@@ -1181,77 +1246,137 @@ def main():
 
     # ===== 스케줄러 탭 =====
     with tab_schedule:
-        st.subheader("자동 발행 스케줄러")
         cfg_sch = load_config()
-        times_raw = cfg_sch.get("schedule_times", ["09:00", "18:00"])
-        enabled = cfg_sch.get("schedule_enabled", False)
+        running = sch_state.running
 
-        sch_enabled = st.toggle("스케줄러 활성화", value=enabled)
-        st.caption("하루에 몇 번, 몇 시에 자동 발행할지 설정합니다.")
-
-        times_input = st.text_area(
-            "발행 시간 (HH:MM, 줄바꿈으로 구분)",
-            value="\n".join(times_raw),
-            height=150,
-            help="예:\n09:00\n14:00\n18:00"
-        )
-
-        # 하이퍼링크 CRUD — data_editor 방식 (key 충돌 없음)
-        st.markdown("---")
-        st.markdown("**하이퍼링크 순환 목록 관리**")
-        st.caption("셀을 직접 클릭해서 수정 | 행 선택 후 휴지통 버튼으로 삭제 | 맨 아래 + 버튼으로 추가")
-
-        links = cfg_sch.get("hyperlinks", [])
-        import pandas as pd
-        df_links = pd.DataFrame(links if links else [{"keyword": "", "url": ""}])
-
-        edited_df = st.data_editor(
-            df_links,
-            column_config={
-                "keyword": st.column_config.TextColumn("키워드", width="small"),
-                "url": st.column_config.TextColumn("URL", width="large"),
-            },
-            num_rows="dynamic",
-            use_container_width=True,
-            key="link_editor",
-        )
-
-        if st.button("하이퍼링크 저장", key="btn_save_links"):
-            new_links = edited_df.dropna(subset=["keyword", "url"])
-            new_links = new_links[
-                (new_links["keyword"].str.strip() != "") &
-                (new_links["url"].str.strip() != "")
-            ].to_dict("records")
-            cfg_sch["hyperlinks"] = new_links
-            cfg_sch["link_index"] = 0
-            save_config(cfg_sch)
-            st.success(f"{len(new_links)}개 저장 완료")
-            st.rerun()
-
-        if st.button("스케줄 설정 저장", type="primary", key="btn_save_schedule"):
-            new_times = [t.strip() for t in times_input.strip().split("\n") if t.strip()]
-            cfg_sch["schedule_times"] = new_times
-            cfg_sch["schedule_enabled"] = sch_enabled
-            save_config(cfg_sch)
-            rebuild_schedule(new_times, sch_enabled)
-            st.success(f"저장 완료! {'활성화됨: ' + ', '.join(new_times) if sch_enabled else '스케줄러 비활성화'}")
-
-        # 현재 등록된 스케줄 표시
-        st.markdown("---")
-        st.markdown("**현재 등록된 스케줄**")
-        sch = get_scheduler()
-        jobs = sch.get_jobs()
-        if jobs:
-            for job in jobs:
-                next_run = job.next_run_time.strftime("%Y-%m-%d %H:%M:%S") if job.next_run_time else "N/A"
-                st.text(f"  {job.id} | 다음 실행: {next_run}")
+        # ── 상단 상태 표시
+        if running:
+            st.success("실행 중 — 블로그 발행 + 방문자 프로그램 순환 중")
         else:
-            st.text("  등록된 스케줄 없음")
+            st.info("중지됨")
 
-        # 앱 시작 시 저장된 스케줄 복원
-        if "schedule_initialized" not in st.session_state:
-            st.session_state["schedule_initialized"] = True
-            rebuild_schedule(times_raw, enabled)
+        st.markdown("---")
+
+        # ── 설정
+        col_left, col_right = st.columns(2)
+        with col_left:
+            st.markdown("**발행 간격**")
+            interval_hours = st.number_input(
+                "발행 주기 (시간)", min_value=1, max_value=24,
+                value=cfg_sch.get("interval_hours", 12), step=1,
+                key="sch_interval"
+            )
+            gap_min = st.number_input(
+                "포스팅 간 대기 (초)", min_value=30, max_value=600,
+                value=cfg_sch.get("gap_seconds", 60), step=10,
+                key="sch_gap"
+            )
+
+        with col_right:
+            st.markdown("**하이퍼링크 목록**")
+            import pandas as pd
+            links = cfg_sch.get("hyperlinks", [])
+            df_links = pd.DataFrame(links if links else [{"keyword": "", "url": ""}])
+            edited_df = st.data_editor(
+                df_links,
+                column_config={
+                    "keyword": st.column_config.TextColumn("키워드", width="small"),
+                    "url":     st.column_config.TextColumn("URL",    width="large"),
+                },
+                num_rows="dynamic",
+                width="stretch",
+                key="link_editor",
+            )
+            if st.button("목록 저장", key="btn_save_links"):
+                new_links = edited_df.dropna(subset=["keyword","url"])
+                new_links = new_links[
+                    (new_links["keyword"].str.strip() != "") &
+                    (new_links["url"].str.strip() != "")
+                ].to_dict("records")
+                cfg_sch["hyperlinks"] = new_links
+                save_config(cfg_sch)
+                st.success(f"{len(new_links)}개 저장")
+                st.rerun()
+
+        st.markdown("---")
+
+        # ── 시작 / 중지 버튼
+        btn_col1, btn_col2 = st.columns(2)
+        with btn_col1:
+            if not running:
+                if st.button("시작", type="primary", width="stretch", key="btn_start"):
+                    cfg_sch["interval_hours"] = interval_hours
+                    cfg_sch["gap_seconds"]    = gap_min
+                    save_config(cfg_sch)
+
+                    sch_state.running = True
+                    with sch_state.lock:
+                        sch_state.logs.clear()
+
+                    _ih  = interval_hours
+                    _gap = gap_min
+
+                    def _sch_loop():
+                        import time as _t
+
+                        def _log(msg):
+                            ts = datetime.now().strftime("%H:%M:%S")
+                            line = f"[{ts}] {msg}"
+                            print(line)
+                            with sch_state.lock:
+                                sch_state.logs.append(line)
+                                if len(sch_state.logs) > 300:
+                                    sch_state.logs[:] = sch_state.logs[-300:]
+
+                        while sch_state.running:
+                            _log("===== 발행 사이클 시작 =====")
+                            run_all_hyperlinks_pipeline(
+                                style_name="친근한 이웃 블로거",
+                                word_count=1500,
+                                gap_seconds=_gap,
+                                log_fn=_log,
+                            )
+                            if not sch_state.running:
+                                break
+                            _log(f"===== 사이클 완료. {_ih}시간 후 재실행 =====")
+                            _t.sleep(_ih * 3600)
+
+                        _log("스케줄러 중지됨.")
+
+                    t = threading.Thread(target=_sch_loop, daemon=True, name="sch_loop")
+                    t.start()
+                    st.rerun()
+
+        with btn_col2:
+            if running:
+                if st.button("중지", type="secondary", width="stretch", key="btn_stop"):
+                    sch_state.running = False
+                    st.rerun()
+
+        # ── 실시간 로그
+        st.markdown("---")
+        lcol1, lcol2 = st.columns([4, 1])
+        with lcol1:
+            st.markdown("**실행 로그**")
+        with lcol2:
+            if st.button("로그 지우기", key="btn_clear_log"):
+                with sch_state.lock:
+                    sch_state.logs.clear()
+                st.rerun()
+
+        with sch_state.lock:
+            logs_snapshot = list(sch_state.logs)
+
+        if logs_snapshot:
+            # 최신 로그가 아래에 오도록, 최근 100줄만 표시
+            log_text = "\n".join(logs_snapshot[-100:])
+            st.code(log_text, language=None)
+        else:
+            st.caption("시작 버튼을 누르면 로그가 실시간으로 표시됩니다.")
+
+        # 실행 중일 때 2초마다 자동 새로고침 (UI 블로킹 없음)
+        if running:
+            st_autorefresh(interval=2000, key="sch_autorefresh")
 
 
 if __name__ == "__main__":

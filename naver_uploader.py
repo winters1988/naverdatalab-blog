@@ -27,6 +27,7 @@ IMG_TITLE_AREA  = os.path.join(BASE_DIR, "title_area.png")
 IMG_CONTENT     = os.path.join(BASE_DIR, "content_area.png")
 IMG_PUBLISH     = os.path.join(BASE_DIR, "publish_btn.png")
 IMG_CONFIRM     = os.path.join(BASE_DIR, "confirm_btn.png")
+IMG_OK          = os.path.join(BASE_DIR, "ok.png")
 
 pyautogui.FAILSAFE = True   # 마우스를 화면 모서리로 이동하면 즉시 중단
 pyautogui.PAUSE    = 0.3
@@ -159,12 +160,26 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
     log("스마트에디터 로딩 대기 (15초)...")
     time.sleep(15)
 
-    # 3. 본문 영역 클릭
-    if not find_and_click(IMG_CONTENT, desc="본문 영역"):
-        log("[대안] 탭 키로 본문 영역 이동 시도")
+    # '작성 중인 글이 있습니다' 팝업 처리
+    if find_and_click(IMG_OK, timeout=5, desc="작성중 글 팝업 확인"):
+        log("이전 작성중 글 팝업 닫음")
+        time.sleep(3)
+    else:
+        time.sleep(3)
+
+    # 3. 본문 영역 클릭 (최대 3회 재시도)
+    content_focused = False
+    for _try in range(3):
+        if find_and_click(IMG_CONTENT, timeout=10, desc=f"본문 영역 (시도 {_try + 1})"):
+            content_focused = True
+            break
+        log(f"  본문 클릭 실패. 3초 후 재시도...")
+        time.sleep(3)
+    if not content_focused:
+        log("[대안] 탭 키로 본문 포커스 이동")
         pyautogui.press("tab")
         time.sleep(0.5)
-    time.sleep(0.5)
+    time.sleep(1.0)
 
     # 4. 하이퍼링크 첫 줄 (upload_data.json의 hyperlink 값 사용)
     hl_kw  = hyperlink.get("keyword", "탐정사무소") if hyperlink else "탐정사무소"
@@ -178,9 +193,13 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
     )
     copy_html_to_clipboard(INTRO_HTML)
     pyautogui.hotkey("ctrl", "v")
-    time.sleep(1)
+    time.sleep(1.5)
     pyautogui.press("enter")
-    time.sleep(0.3)
+    time.sleep(0.5)
+
+    # 붙여넣기 후 포커스 확인: 빈 에디터 방지를 위해 한 번 더 클릭
+    find_and_click(IMG_CONTENT, timeout=5, desc="본문 포커스 재확인")
+    time.sleep(0.5)
 
     # 5. 이미지 마커 기준으로 HTML 분할 → 텍스트-이미지 교차 삽입
     # 구조: 소제목(###) → [사진N] → 본문 순서 그대로 처리
@@ -197,7 +216,7 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
             if cleaned:
                 copy_html_to_clipboard(cleaned)
                 pyautogui.hotkey("ctrl", "v")
-                time.sleep(1)
+                time.sleep(1.2)
 
     log("본문 붙여넣기 완료")
     time.sleep(1)
@@ -222,14 +241,31 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
     if find_and_click(IMG_PUBLISH, desc="발행 버튼"):
         time.sleep(2)
         if find_and_click(IMG_CONFIRM, desc="발행 확인"):
-            log("발행 완료!")
-            return True
+            time.sleep(3)  # 발행 후 URL 전환 대기
+            # 주소창에서 발행된 URL 캡처
+            published_url = capture_current_url()
+            log(f"발행 완료! URL: {published_url}")
+            return True, published_url
         else:
             log("[안내] 발행 확인 버튼을 직접 눌러주세요.")
     else:
         log("[안내] 발행 버튼을 직접 눌러주세요.")
 
-    return False
+    return False, None
+
+
+IMG_URL_COPY = os.path.join(BASE_DIR, "url_copy.png")
+
+def capture_current_url() -> str:
+    """발행 후 'URL 복사' 버튼 클릭 → 클립보드에서 URL 반환"""
+    try:
+        if find_and_click(IMG_URL_COPY, timeout=8, desc="URL 복사 버튼"):
+            time.sleep(0.5)
+            url = pyperclip.paste().strip()
+            return url if url.startswith("http") else ""
+    except Exception:
+        pass
+    return ""
 
 
 if __name__ == "__main__":
@@ -240,11 +276,25 @@ if __name__ == "__main__":
     with open(sys.argv[1], encoding="utf-8") as f:
         data = json.load(f)
 
-    success = upload(
+    success, published_url = upload(
         title=data["title"],
         html_content=data["html_content"],
         blog_id=data["blog_id"],
         image_paths=data.get("image_paths", {}),
         hyperlink=data.get("hyperlink"),
     )
+
+    # 발행 URL을 JSON 파일과 같은 경로에 저장
+    if published_url:
+        url_log = os.path.join(BASE_DIR, "published_urls.json")
+        try:
+            existing = json.load(open(url_log, encoding="utf-8")) if os.path.exists(url_log) else []
+        except Exception:
+            existing = []
+        existing.append({"url": published_url, "title": data["title"],
+                          "published_at": __import__("datetime").datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+        with open(url_log, "w", encoding="utf-8") as f:
+            json.dump(existing, f, ensure_ascii=False, indent=2)
+        log(f"URL 저장 완료: {url_log}")
+
     sys.exit(0 if success else 1)
