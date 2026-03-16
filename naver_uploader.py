@@ -231,14 +231,14 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
     time.sleep(1)
 
     # 7. 제목 입력 - 페이지 최상단으로 스크롤
-    # F6 → 주소창 포커스(iframe 탈출) → Escape → 페이지 복귀 → Ctrl+Home
-    pyautogui.press("f6")
-    time.sleep(0.4)
-    pyautogui.press("escape")
-    time.sleep(0.3)
-    pyautogui.hotkey("ctrl", "Home")
-    time.sleep(0.6)
+    # 화면 오른쪽 끝(페이지 스크롤바 위치)에서 스크롤 → iframe이 아닌 페이지 스크롤
     sw, sh = pyautogui.size()
+    pyautogui.moveTo(sw - 8, sh // 2)
+    time.sleep(0.2)
+    for _ in range(25):
+        pyautogui.scroll(5)
+        time.sleep(0.04)
+    time.sleep(0.5)
 
     pyperclip.copy(title)
     title_clicked = find_and_click(IMG_TITLE_AREA, desc="제목 영역")
