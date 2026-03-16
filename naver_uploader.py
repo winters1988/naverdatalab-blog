@@ -230,14 +230,9 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
     log("본문 붙여넣기 완료")
     time.sleep(1)
 
-    # 7. 제목 입력 - 페이지 최상단으로 스크롤
-    # 화면 오른쪽 끝(페이지 스크롤바 위치)에서 스크롤 → iframe이 아닌 페이지 스크롤
+    # 7. 제목 입력 - UP키 100번으로 최상단 이동
     sw, sh = pyautogui.size()
-    pyautogui.moveTo(sw - 8, sh // 2)
-    time.sleep(0.2)
-    for _ in range(25):
-        pyautogui.scroll(5)
-        time.sleep(0.04)
+    pyautogui.press("up", presses=100, interval=0.02)
     time.sleep(0.5)
 
     pyperclip.copy(title)
