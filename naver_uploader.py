@@ -231,27 +231,19 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
     time.sleep(1)
 
     # 7. 제목 입력 - 페이지 최상단으로 스크롤
-    sw, sh = pyautogui.size()
-    # 에디터 iframe 밖(상단 10% 영역)으로 마우스 이동 후 스크롤
-    pyautogui.moveTo(sw // 2, int(sh * 0.10))
-    time.sleep(0.2)
-    # 마우스 휠로 페이지 최상단까지 스크롤 업 (30클릭 × 3 = 충분)
-    for _ in range(30):
-        pyautogui.scroll(3)
-        time.sleep(0.03)
-    time.sleep(0.5)
-    # Ctrl+Home으로 추가 보험
+    # F6 → 주소창 포커스(iframe 탈출) → Escape → 페이지 복귀 → Ctrl+Home
+    pyautogui.press("f6")
+    time.sleep(0.4)
+    pyautogui.press("escape")
+    time.sleep(0.3)
     pyautogui.hotkey("ctrl", "Home")
-    time.sleep(0.5)
+    time.sleep(0.6)
+    sw, sh = pyautogui.size()
 
     pyperclip.copy(title)
     title_clicked = find_and_click(IMG_TITLE_AREA, desc="제목 영역")
     if not title_clicked:
-        # 대안: 제목 영역 좌표 클릭 (화면 상단 20% 위치)
-        pyautogui.click(sw // 2, int(sh * 0.20))
-        time.sleep(0.5)
-        log("[대안] 제목 영역 좌표 클릭")
-        title_clicked = True
+        log("[경고] 제목 영역 인식 실패 — 발행 건너뜀")
 
     pyautogui.hotkey("ctrl", "a")
     time.sleep(0.3)
