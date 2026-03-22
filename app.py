@@ -530,8 +530,8 @@ UPLOADER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "naver_
 UPLOAD_DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "upload_data.json")
 
 
-def _prepare_upload(blog_text, photos, hyperlink, log):
-    """업로드용 JSON 파일 생성 후 경로 반환"""
+def _prepare_upload(blog_text, photos, hyperlink, log, account: dict = None):
+    """업로드용 JSON 파일 생성 후 경로 반환. account={"blog_id","profile_img"} 지정 가능"""
     image_paths = {}
     for tag in ["[사진1]", "[사진2]", "[사진3]", "[사진4]"]:
         if tag in photos:
@@ -551,8 +551,19 @@ def _prepare_upload(blog_text, photos, hyperlink, log):
     html_no_img = re.sub(r'<p[^>]*>세상소식을 전하는.*?</p>', '', html_no_img, flags=re.DOTALL)
 
     first_line = re.sub(r'[#*`]', '', blog_text.split('\n')[0]).strip()
-    cfg = load_config()
-    blog_id = cfg.get("BLOG_ID", NAVER_BLOG_ID)
+
+    # 계정 정보: account 파라미터 > config.json
+    if account:
+        blog_id = account.get("blog_id", "")
+        profile_img = account.get("profile_img", "")
+    else:
+        cfg = load_config()
+        blog_id = cfg.get("BLOG_ID", NAVER_BLOG_ID)
+        profile_img = ""
+
+    # profile_img 절대경로 변환
+    if profile_img and not os.path.isabs(profile_img):
+        profile_img = os.path.join(BASE_DIR, profile_img)
 
     # 업로드 파일명: 충돌 방지용 타임스탬프
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -566,13 +577,15 @@ def _prepare_upload(blog_text, photos, hyperlink, log):
             "blog_id": blog_id,
             "image_paths": image_paths,
             "hyperlink": hyperlink,
+            "profile_img": profile_img,
         }, f, ensure_ascii=False, indent=2)
     return path
 
 
 def run_full_pipeline(style_name="친근한 이웃 블로거", word_count=1500,
                       custom_angle="", extra_keywords="", log_fn=None,
-                      hyperlink: dict = None, topic_override: dict = None):
+                      hyperlink: dict = None, topic_override: dict = None,
+                      account: dict = None):
     """단건 STEP1~3 + 업로드. hyperlink/topic_override 지정 시 해당 값 사용."""
     def log(msg):
         ts = datetime.now().strftime("%H:%M:%S")
@@ -617,7 +630,7 @@ def run_full_pipeline(style_name="친근한 이웃 블로거", word_count=1500,
         log(f"STEP3 완료: {len(blog_text.replace(' ','').replace(chr(10),''))}자, 사진 {len(photos)}장")
 
         log("업로드 준비 중...")
-        data_path = _prepare_upload(blog_text, photos, hyperlink, log)
+        data_path = _prepare_upload(blog_text, photos, hyperlink, log, account=account)
 
         log("네이버 업로드 실행...")
         proc = subprocess.Popen([sys.executable, UPLOADER_PATH, data_path])
@@ -631,7 +644,7 @@ def run_full_pipeline(style_name="친근한 이웃 블로거", word_count=1500,
 
 def run_all_hyperlinks_pipeline(style_name="친근한 이웃 블로거", word_count=1500,
                                  custom_angle="", extra_keywords="", log_fn=None,
-                                 gap_seconds=60):
+                                 gap_seconds=60, account: dict = None):
     """하이퍼링크 N개 × 트렌드 상위 N개 카테고리 → 카테고리별 다른 주제로 순차 발행."""
     import time as _time
 
@@ -709,6 +722,7 @@ def run_all_hyperlinks_pipeline(style_name="친근한 이웃 블로거", word_co
                 style_name=style_name, word_count=word_count,
                 custom_angle=custom_angle, extra_keywords=extra_keywords,
                 log_fn=log_fn, hyperlink=p["hyperlink"], topic_override=override,
+                account=account,
             )
             if not ok:
                 log(f"[{i+1}번] 실패, 다음으로 계속...")
@@ -718,9 +732,6 @@ def run_all_hyperlinks_pipeline(style_name="친근한 이웃 블로거", word_co
                 _time.sleep(gap_seconds)
 
         log(f"\n전체 {len(plan)}건 발행 완료!")
-
-        # 발행된 URL 수집 후 backlink.py 실행
-        _trigger_backlink(log)
         return True
     except Exception as e:
         log(f"오류: {e}")
@@ -1287,8 +1298,33 @@ def main():
             )
 
         with col_right:
-            st.markdown("**하이퍼링크 목록**")
+            st.markdown("**블로그 계정 목록**")
             import pandas as pd
+            accounts = cfg_sch.get("accounts", [])
+            df_acc = pd.DataFrame(accounts if accounts else [{"name": "", "blog_id": "", "profile_img": ""}])
+            edited_acc = st.data_editor(
+                df_acc,
+                column_config={
+                    "name":        st.column_config.TextColumn("계정명", width="small"),
+                    "blog_id":     st.column_config.TextColumn("블로그 ID", width="small"),
+                    "profile_img": st.column_config.TextColumn("프로필 이미지 파일", width="medium"),
+                },
+                num_rows="dynamic",
+                width="stretch",
+                key="acc_editor",
+            )
+            if st.button("계정 저장", key="btn_save_acc"):
+                new_acc = edited_acc.dropna(subset=["name", "blog_id"])
+                new_acc = new_acc[
+                    (new_acc["name"].str.strip() != "") &
+                    (new_acc["blog_id"].str.strip() != "")
+                ].to_dict("records")
+                cfg_sch["accounts"] = new_acc
+                save_config(cfg_sch)
+                st.success(f"{len(new_acc)}개 계정 저장")
+                st.rerun()
+
+            st.markdown("**하이퍼링크 목록**")
             links = cfg_sch.get("hyperlinks", [])
             df_links = pd.DataFrame(links if links else [{"keyword": "", "url": ""}])
             edited_df = st.data_editor(
@@ -1332,6 +1368,7 @@ def main():
 
                     def _sch_loop():
                         import time as _t
+                        from itertools import cycle as _cycle
 
                         def _log(msg):
                             ts = datetime.now().strftime("%H:%M:%S")
@@ -1342,17 +1379,33 @@ def main():
                                 if len(sch_state.logs) > 300:
                                     sch_state.logs[:] = sch_state.logs[-300:]
 
+                        # 전체 계정 목록
+                        _cfg = load_config()
+                        _accounts = _cfg.get("accounts", [])
+                        if not _accounts:
+                            _accounts = [{"name": "기본", "blog_id": _cfg.get("BLOG_ID", ""), "profile_img": ""}]
+
                         while sch_state.running:
-                            _log("===== 발행 사이클 시작 =====")
-                            run_all_hyperlinks_pipeline(
-                                style_name="친근한 이웃 블로거",
-                                word_count=1500,
-                                gap_seconds=_gap,
-                                log_fn=_log,
-                            )
+                            # 모든 계정 순차 발행
+                            for acc in _accounts:
+                                if not sch_state.running:
+                                    break
+                                _log(f"===== 발행 시작 | 계정: {acc['name']} ({acc['blog_id']}) =====")
+                                run_all_hyperlinks_pipeline(
+                                    style_name="친근한 이웃 블로거",
+                                    word_count=1500,
+                                    gap_seconds=_gap,
+                                    log_fn=_log,
+                                    account=acc,
+                                )
+
                             if not sch_state.running:
                                 break
-                            _log(f"===== 사이클 완료. {_ih}시간 후 재실행 =====")
+
+                            # 모든 계정 발행 완료 후 방문 프로그램 실행
+                            _trigger_backlink(_log)
+
+                            _log(f"===== 전체 계정 발행 완료. {_ih}시간 후 재실행 =====")
                             _t.sleep(_ih * 3600)
 
                         _log("스케줄러 중지됨.")

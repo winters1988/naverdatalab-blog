@@ -1,0 +1,265 @@
+{
+  "proxy_list_success": [
+    {
+      "ip": "124.198.14.249",
+      "port": 15648
+    },
+    {
+      "ip": "124.198.63.216",
+      "port": 15648
+    },
+    {
+      "ip": "49.254.52.182",
+      "port": 15648
+    },
+    {
+      "ip": "211.34.105.33",
+      "port": 80
+    },
+    {
+      "ip": "49.254.183.172",
+      "port": 15648
+    },
+    {
+      "ip": "124.198.63.214",
+      "port": 15648
+    },
+    {
+      "ip": "124.198.14.246",
+      "port": 15648
+    },
+    {
+      "ip": "121.126.164.83",
+      "port": 15648
+    },
+    {
+      "ip": "124.198.123.204",
+      "port": 15648
+    },
+    {
+      "ip": "115.144.57.133",
+      "port": 15648
+    },
+    {
+      "ip": "211.225.214.241",
+      "port": 80
+    },
+    {
+      "ip": "1.234.23.159",
+      "port": 80
+    },
+    {
+      "ip": "152.67.199.163",
+      "port": 3128
+    },
+    {
+      "ip": "121.132.61.211",
+      "port": 3128
+    },
+    {
+      "ip": "124.198.63.216",
+      "port": 15648
+    },
+    {
+      "ip": "124.198.123.204",
+      "port": 15648
+    },
+    {
+      "ip": "124.198.14.249",
+      "port": 15648
+    },
+    {
+      "ip": "211.34.105.33",
+      "port": 80
+    },
+    {
+      "ip": "124.198.63.214",
+      "port": 15648
+    },
+    {
+      "ip": "124.198.14.246",
+      "port": 15648
+    },
+    {
+      "ip": "121.126.164.83",
+      "port": 15648
+    },
+    {
+      "ip": "115.144.57.133",
+      "port": 15648
+    },
+    {
+      "ip": "49.254.52.182",
+      "port": 15648
+    },
+    {
+      "ip": "1.234.23.159",
+      "port": 80
+    },
+    {
+      "ip": "49.254.183.172",
+      "port": 15648
+    },
+    {
+      "ip": "211.225.214.241",
+      "port": 80
+    },
+    {
+      "ip": "220.81.123.23",
+      "port": 48678
+    },
+    {
+      "ip": "144.24.66.26",
+      "port": 8081
+    },
+    {
+      "ip": "183.111.246.64",
+      "port": 443
+    },
+    {
+      "ip": "125.249.191.210",
+      "port": 3128
+    },
+    {
+      "ip": "152.67.199.163",
+      "port": 3128
+    },
+    {
+      "ip": "14.34.180.21",
+      "port": 38157
+    },
+    {
+      "ip": "211.175.140.8",
+      "port": 8000
+    },
+    {
+      "ip": "1.234.23.159",
+      "port": 80
+    },
+    {
+      "ip": "121.132.61.211",
+      "port": 3128
+    },
+    {
+      "ip": "211.225.214.241",
+      "port": 80
+    },
+    {
+      "ip": "123.143.162.221",
+      "port": 6388
+    },
+    {
+      "ip": "175.213.76.24",
+      "port": 80
+    },
+    {
+      "ip": "1.234.23.159",
+      "port": 80
+    },
+    {
+      "ip": "140.245.66.105",
+      "port": 8081
+    },
+    {
+      "ip": "121.165.169.220",
+      "port": 8790
+    },
+    {
+      "ip": "152.67.199.163",
+      "port": 3128
+    },
+    {
+      "ip": "144.24.66.26",
+      "port": 8081
+    },
+    {
+      "ip": "183.110.246.99",
+      "port": 80
+    },
+    {
+      "ip": "211.175.140.8",
+      "port": 8000
+    },
+    {
+      "ip": "218.236.166.96",
+      "port": 8888
+    },
+    {
+      "ip": "14.34.180.21",
+      "port": 38157
+    }
+  ],
+  "target_domains": [
+    "incheondetective.xyz",
+    "suwondetective.co.kr",
+    "kspdplus.co.kr"
+  ],
+  "search_keywords": [
+    "인천흥신소",
+    "수원흥신소",
+    "흥신소"
+  ],
+  "naver_tv_channel_paths": [
+    "/incheonkspd",
+    "/suwonkspd",
+    "/lovekspdplus"
+  ],
+  "user_agents": [
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
+  ],
+  "dwell_time_min": 30,
+  "dwell_time_max": 45,
+  "start_urls": [
+    "https://blog.naver.com/jsk1988/224217340625",
+    "https://blog.naver.com/jsk1988/224217344842",
+    "https://blog.naver.com/jsk1988/224217355863",
+    "https://blog.naver.com/jsk1988/224217360285",
+    "https://blog.naver.com/jsk1988/224217367524",
+    "https://blog.naver.com/jsk1988/224217402764",
+    "https://blog.naver.com/jsk1988/224217426714",
+    "https://blog.naver.com/jsk1988/224217435404",
+    "https://blog.naver.com/jsk1988/224217437708",
+    "https://blog.naver.com/jsk1988/224217440120",
+    "https://blog.naver.com/jsk1988/224217446592",
+    "https://blog.naver.com/jsk1988/224217846190",
+    "https://blog.naver.com/jsk1988/224217848087",
+    "https://blog.naver.com/jsk1988/224217855258",
+    "https://blog.naver.com/jsk1988/224217857147",
+    "https://blog.naver.com/jsk1988/224217867242",
+    "https://blog.naver.com/jsk1988/224217869219",
+    "https://blog.naver.com/jsk1988/224217871373",
+    "https://blog.naver.com/jsk1988/224217880164",
+    "https://blog.naver.com/jsk1988/224218882460",
+    "https://blog.naver.com/jsk1988/224218899568",
+    "https://blog.naver.com/jsk1988/224218904721",
+    "https://blog.naver.com/jsk1988/224218907372",
+    "https://blog.naver.com/jsk1988/224218910007",
+    "https://blog.naver.com/jsk1988/224218912810",
+    "https://blog.naver.com/jsk1988/224218915366",
+    "https://blog.naver.com/jsk1988/224218917779",
+    "https://blog.naver.com/jsk1988/224218920094",
+    "https://blog.naver.com/jsk1988/224219212552",
+    "https://blog.naver.com/jsk1988/224219214530",
+    "https://blog.naver.com/jsk1988/224219216492",
+    "https://blog.naver.com/jsk1988/224219222249",
+    "https://blog.naver.com/jsk1988/224219224005",
+    "https://blog.naver.com/jsk1988/224219227713",
+    "https://blog.naver.com/jsk1988/224219230514",
+    "https://blog.naver.com/jsk1988/224220131610",
+    "https://blog.naver.com/jsk1988/224220134296",
+    "https://blog.naver.com/jsk1988/224220136962",
+    "https://blog.naver.com/jsk1988/224220204573",
+    "https://blog.naver.com/jsk1988/224220206793",
+    "https://blog.naver.com/jsk1988/224220209214",
+    "https://blog.naver.com/jsk1988/224220211541",
+    "https://blog.naver.com/jsk1988/224220213795",
+    "https://blog.naver.com/jsk1988/224220216064",
+    "https://blog.naver.com/jsk1988/224220218486",
+    "https://blog.naver.com/winters1988/224220251035",
+    "https://blog.naver.com/winters1988/224220254159",
+    "https://blog.naver.com/winters1988/224220257223",
+    "https://blog.naver.com/winters1988/224220260009",
+    "https://blog.naver.com/winters1988/224220263062"
+  ]
+}

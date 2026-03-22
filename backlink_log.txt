@@ -1,0 +1,267 @@
+[2026-03-15 20:11:53] backlink.py 시작
+✅ 설정 파일 로드: configbacklink.json
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 124.198.14.249:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 124.198.63.216:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 49.254.52.182:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+
+🧭 FIREFOX | 프록시: 211.34.105.33:80 | UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36
+🔗 시작 URL: https://blog.naver.com/jsk1988/224217355863 | 타겟 도메인: incheondetective.xyz
+💤 짧은 대기: 2.30초...
+➡️ [BLG 경로] 타겟 URL(https://blog.naver.com/jsk1988/224217355863)로 이동 완료.
+✅ 네이버 블로그 mainFrame iframe 전환 성공.
+➡️ 타겟 링크 탐색 시작...
+✅ 성공 기록: 211.34.105.33:80에서 incheondetective.xyz 접속 성공. (총 3회 기록)
+📌 [211.34.105.33:80] 타겟 진입 성공 기록 반영됨. 현재 URL = https://blog.naver.com/jsk1988/224116024618
+⏱ 타겟 사이트 체류시간: 39초
+↕️ 페이지 스크롤 시도: 2회
+🔄 내부 탐색 시도 1/2...
+❌ 랜덤 내부 링크 클릭 중 오류: Message: Browsing context has been discarded
+Stacktrace:
+RemoteError@chrome://remote/content/shared/RemoteError.sys.mjs:8:8
+WebDriverError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:202:5
+NoSuchWindowError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:782:5
+assert.that/<@chrome://remote/content/shared/webdriver/Assert.sys.mjs:581:13
+assert.open@chrome://remote/content/shared/webdriver/Assert.sys.mjs:169:4
+GeckoDriver.prototype.execute_@chrome://remote/content/marionette/driver.sys.mjs:1112:15
+GeckoDriver.prototype.executeScript@chrome://remote/content/marionette/driver.sys.mjs:1022:15
+dispatch@chrome://remote/content/marionette/server.sys.mjs:318:40
+execute@chrome://remote/content/marionette/server.sys.mjs:289:16
+onPacket/<@chrome://remote/content/marionette/server.sys.mjs:262:20
+onPacket@chrome://remote/content/marionette/server.sys.mjs:263:9
+_onJSONObjectReady/<@chrome://remote/content/marionette/transport.sys.mjs:494:20
+ssi_onQuitApplicationGranted@resource:///modules/sessionstore/SessionStore.sys.mjs:2887:19
+ssi_observe@resource:///modules/sessionstore/SessionStore.sys.mjs:1581:14
+
+↕️ 페이지 스크롤 시도: 2회
+❌ 타겟 링크 클릭 중 예상치 못한 오류: Message: WebDriver session does not exist, or is not active
+Stacktrace:
+RemoteError@chrome://remote/content/shared/RemoteError.sys.mjs:8:8
+WebDriverError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:202:5
+InvalidSessionIDError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:472:5
+assert.that/<@chrome://remote/content/shared/webdriver/Assert.sys.mjs:581:13
+assert.session@chrome://remote/content/shared/webdriver/Assert.sys.mjs:38:4
+dispatch@chrome://remote/content/marionette/server.sys.mjs:315:19
+execute@chrome://remote/content/marionette/server.sys.mjs:289:16
+onPacket/<@chrome://remote/content/marionette/server.sys.mjs:262:20
+onPacket@chrome://remote/content/marionette/server.sys.mjs:263:9
+_onJSONObjectReady/<@chrome://remote/content/marionette/transport.sys.mjs:494:20
+
+❌ 블로그 -> 타겟 로직 실행 중 오류: Message: WebDriver session does not exist, or is not active
+Stacktrace:
+RemoteError@chrome://remote/content/shared/RemoteError.sys.mjs:8:8
+WebDriverError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:202:5
+InvalidSessionIDError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:472:5
+assert.that/<@chrome://remote/content/shared/webdriver/Assert.sys.mjs:581:13
+assert.session@chrome://remote/content/shared/webdriver/Assert.sys.mjs:38:4
+dispatch@chrome://remote/content/marionette/server.sys.mjs:315:19
+execute@chrome://remote/content/marionette/server.sys.mjs:289:16
+onPacket/<@chrome://remote/content/marionette/server.sys.mjs:262:20
+onPacket@chrome://remote/content/marionette/server.sys.mjs:263:9
+_onJSONObjectReady/<@chrome://remote/content/marionette/transport.sys.mjs:494:20
+
+❌ 전체 로직 실행 중 오류 발생: Message: WebDriver session does not exist, or is not active
+Stacktrace:
+RemoteError@chrome://remote/content/shared/RemoteError.sys.mjs:8:8
+WebDriverError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:202:5
+InvalidSessionIDError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:472:5
+assert.that/<@chrome://remote/content/shared/webdriver/Assert.sys.mjs:581:13
+assert.session@chrome://remote/content/shared/webdriver/Assert.sys.mjs:38:4
+dispatch@chrome://remote/content/marionette/server.sys.mjs:315:19
+execute@chrome://remote/content/marionette/server.sys.mjs:289:16
+onPacket/<@chrome://remote/content/marionette/server.sys.mjs:262:20
+onPacket@chrome://remote/content/marionette/server.sys.mjs:263:9
+_onJSONObjectReady/<@chrome://remote/content/marionette/transport.sys.mjs:494:20
+
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 49.254.183.172:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 124.198.63.214:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 124.198.14.246:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 121.126.164.83:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 124.198.123.204:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 115.144.57.133:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 211.225.214.241:80. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 1.234.23.159:80. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 152.67.199.163:3128. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 121.132.61.211:3128. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 124.198.63.216:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 124.198.123.204:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 124.198.14.249:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+
+🧭 FIREFOX | 프록시: 211.34.105.33:80 | UA: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36
+🔗 시작 URL: https://blog.naver.com/jsk1988/224217367524 | 타겟 도메인: kspdplus.co.kr
+💤 짧은 대기: 3.63초...
+➡️ [BLG 경로] 타겟 URL(https://blog.naver.com/jsk1988/224217367524)로 이동 완료.
+✅ 네이버 블로그 mainFrame iframe 전환 성공.
+➡️ 타겟 링크 탐색 시작...
+✅ 성공 기록: 211.34.105.33:80에서 kspdplus.co.kr 접속 성공. (총 5회 기록)
+📌 [211.34.105.33:80] 타겟 진입 성공 기록 반영됨. 현재 URL = https://blog.naver.com/jsk1988/224116024618
+⏱ 타겟 사이트 체류시간: 45초
+↕️ 페이지 스크롤 시도: 2회
+🔄 내부 탐색 시도 1/1...
+↕️ 페이지 스크롤 시도: 1회
+💤 짧은 대기: 3.93초...
+📤 외부 이탈 모션 시작 (Naver 직접 이동 및 서핑 후 복귀)...
+❌ 타겟 링크 클릭 중 예상치 못한 오류: Message: Failed to decode response from marionette
+
+❌ 블로그 -> 타겟 로직 실행 중 오류: Message: Tried to run command without establishing a connection
+
+❌ 전체 로직 실행 중 오류 발생: Message: Tried to run command without establishing a connection
+
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 124.198.63.214:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 124.198.14.246:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 121.126.164.83:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 115.144.57.133:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 49.254.52.182:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 1.234.23.159:80. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 49.254.183.172:15648. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 211.225.214.241:80. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 220.81.123.23:48678. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 144.24.66.26:8081. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 183.111.246.64:443. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 125.249.191.210:3128. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 152.67.199.163:3128. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 14.34.180.21:38157. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 211.175.140.8:8000. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 1.234.23.159:80. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================
+🚀 새 시뮬레이션 시작: 네이버 블로그/일반 URL -> 타겟 링크 클릭
+🚫 프록시 비활성화됨: 121.132.61.211:3128. 스킵합니다.
+❌ 시뮬레이션 실패/프록시 비활성화. 다음 실행까지 0초 대기...
+
+==================================================

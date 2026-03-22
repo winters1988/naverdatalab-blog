@@ -118,8 +118,8 @@ def paste_image_from_file(img_path: str):
         return False
 
 
-def open_chrome_and_select_profile():
-    """Win+R로 Chrome 실행 → 윈터스 프로필 선택"""
+def open_chrome_and_select_profile(profile_img: str = None):
+    """Win+R로 Chrome 실행 → 프로필 이미지로 계정 선택"""
     log("Chrome 실행 중...")
     pyautogui.hotkey("win", "r")
     time.sleep(0.8)
@@ -127,8 +127,10 @@ def open_chrome_and_select_profile():
     pyautogui.press("enter")
     time.sleep(3)
 
-    # 프로필 선택 화면에서 윈터스 계정 클릭
-    if not find_and_click(IMG_ACCOUNT, timeout=15, desc="윈터스 프로필 선택"):
+    # 프로필 선택: 지정된 이미지 우선, 없으면 기본 google_account.png
+    img_path = profile_img if profile_img and os.path.exists(profile_img) else IMG_ACCOUNT
+    img_name = os.path.basename(img_path)
+    if not find_and_click(img_path, timeout=15, desc=f"프로필 선택 ({img_name})"):
         log("[경고] 프로필 선택 화면이 없거나 이미 선택됨. 계속 진행합니다.")
     time.sleep(2)
 
@@ -144,15 +146,15 @@ def navigate_to_blog_write(blog_id: str):
     log(f"이동: {url}")
 
 
-def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None, hyperlink: dict = None):
+def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None, hyperlink: dict = None, profile_img: str = None):
     title = clean_title(title)
     image_paths = image_paths or {}
     log(f"업로드 시작 | 블로그: {blog_id}")
     log(f"제목: {title}")
     log(f"이미지: {len(image_paths)}장")
 
-    # 1. Chrome 새로 열고 윈터스 프로필 선택
-    open_chrome_and_select_profile()
+    # 1. Chrome 새로 열고 프로필 선택
+    open_chrome_and_select_profile(profile_img)
 
     # 2. 블로그 글쓰기 URL로 이동
     navigate_to_blog_write(blog_id)
@@ -228,28 +230,24 @@ def upload(title: str, html_content: str, blog_id: str, image_paths: dict = None
                 time.sleep(1.2)
 
     log("본문 붙여넣기 완료")
-    time.sleep(1)
+    time.sleep(2)
 
-    # 7. 제목 입력 - UP키 100번으로 최상단 이동
-    sw, sh = pyautogui.size()
-    pyautogui.press("up", presses=100, interval=0.02)
-    time.sleep(0.5)
+    # 7. 제목 입력 - UP키 1000번으로 제목 영역에 자동 포커스
+    pyautogui.press("up", presses=1000, interval=0.01)
+    time.sleep(2)  # 스크롤 완료 대기
 
     pyperclip.copy(title)
-    title_clicked = find_and_click(IMG_TITLE_AREA, desc="제목 영역")
-    if not title_clicked:
-        log("[경고] 제목 영역 인식 실패 — 발행 건너뜀")
-
     pyautogui.hotkey("ctrl", "a")
-    time.sleep(0.3)
+    time.sleep(0.5)
     pyautogui.hotkey("ctrl", "v")
+    time.sleep(1)
     log(f"제목 입력 완료: {title}")
 
-    time.sleep(1)
+    time.sleep(3)  # 에디터 내부 저장/반영 대기
 
     # 8. 발행
     if find_and_click(IMG_PUBLISH, desc="발행 버튼"):
-        time.sleep(2)
+        time.sleep(3)
         if find_and_click(IMG_CONFIRM, desc="발행 확인"):
             time.sleep(3)  # 발행 후 URL 전환 대기
             # 주소창에서 발행된 URL 캡처
@@ -292,6 +290,7 @@ if __name__ == "__main__":
         blog_id=data["blog_id"],
         image_paths=data.get("image_paths", {}),
         hyperlink=data.get("hyperlink"),
+        profile_img=data.get("profile_img"),
     )
 
     # 발행 URL을 JSON 파일과 같은 경로에 저장

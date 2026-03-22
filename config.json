@@ -1,5 +1,22 @@
 {
     "BLOG_ID": "jsk1988",
+    "accounts": [
+        {
+            "name": "윈터스",
+            "blog_id": "jsk1988",
+            "profile_img": "profile_winters.png"
+        },
+        {
+            "name": "안토니오",
+            "blog_id": "wintersjsk1988",
+            "profile_img": "profile_a.png"
+        },
+        {
+            "name": "성광",
+            "blog_id": "winters1988",
+            "profile_img": "profile_sk.png"
+        }
+    ],
     "schedule_times": [
         "09:00",
         "18:00"
@@ -34,6 +51,20 @@
         {
             "keyword": "인천탐정사무소",
             "url": "https://incheondetective.xyz/"
+        },
+        {
+            "keyword": "전주흥신소",
+            "url": "https://incheondetective.co.kr"
+        },
+        {
+            "keyword": "서울탐정사무소",
+            "url": "https://kspdplus.kr/"
+        },
+        {
+            "keyword": "서울흥신소",
+            "url": "https://kspdplus.kr/"
         }
-    ]
+    ],
+    "interval_hours": 12,
+    "gap_seconds": 60
 }
