@@ -1346,6 +1346,8 @@ def main():
                 cfg_sch["hyperlinks"] = new_links
                 save_config(cfg_sch)
                 st.success(f"{len(new_links)}개 저장")
+                if "link_editor" in st.session_state:
+                    del st.session_state["link_editor"]
                 st.rerun()
 
         st.markdown("---")

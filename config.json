@@ -7,6 +7,11 @@
             "profile_img": "profile_winters.png"
         },
         {
+            "name": "윈터스3",
+            "blog_id": "mkoobs5968",
+            "profile_img": "profile_3.png"
+        },
+        {
             "name": "안토니오",
             "blog_id": "wintersjsk1988",
             "profile_img": "profile_a.png"
@@ -25,16 +30,8 @@
     "link_index": 2,
     "hyperlinks": [
         {
-            "keyword": "흥신소",
-            "url": "https://www.kspdtheone.com/"
-        },
-        {
             "keyword": "탐정사무소",
-            "url": "https://kspdplus.co.kr/"
-        },
-        {
-            "keyword": "대구탐정사무소",
-            "url": "https://kspdplus.co.kr/daegu"
+            "url": "https://www.kspdtheone.com/"
         },
         {
             "keyword": "흥신소",
@@ -45,26 +42,42 @@
             "url": "https://koreainvestigators.com/"
         },
         {
+            "keyword": "탐정사무소",
+            "url": "https://www.kspdtheone.com/"
+        },
+        {
+            "keyword": "흥신소",
+            "url": "https://www.kspdtheone.com/"
+        },
+        {
+            "keyword": "탐정사무소",
+            "url": "https://www.kspdtheone.com/"
+        },
+        {
+            "keyword": "흥신소",
+            "url": "https://www.kspdtheone.com/"
+        },
+        {
+            "keyword": "탐정사무소",
+            "url": "https://www.kspdtheone.com/"
+        },
+        {
+            "keyword": "흥신소",
+            "url": "https://www.kspdtheone.com/"
+        },
+        {
             "keyword": "수원흥신소",
             "url": "https://suwondetective.co.kr/"
         },
         {
+            "keyword": "탐정사무소",
+            "url": "https://kspdplus.co.kr/"
+        },
+        {
             "keyword": "인천탐정사무소",
-            "url": "https://incheondetective.xyz/"
-        },
-        {
-            "keyword": "전주흥신소",
-            "url": "https://incheondetective.co.kr"
-        },
-        {
-            "keyword": "서울탐정사무소",
-            "url": "https://kspdplus.kr/"
-        },
-        {
-            "keyword": "서울흥신소",
-            "url": "https://kspdplus.kr/"
+            "url": "https://incheondetective.xyz"
         }
     ],
-    "interval_hours": 12,
+    "interval_hours": 24,
     "gap_seconds": 60
 }
